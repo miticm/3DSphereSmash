@@ -1,0 +1,22 @@
+{
+  "name": "threejs-game",
+  "version": "1.0.0",
+  "description": "cs252 lab6",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miticm/ThreeJS-Game.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/miticm/ThreeJS-Game/issues"
+  },
+  "homepage": "https://github.com/miticm/ThreeJS-Game#readme",
+  "dependencies": {
+    "three": "^0.98.0"
+  }
+}
