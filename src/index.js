@@ -1,6 +1,9 @@
 let scene, camera, renderer;
 
 function init() {
+
+  let stats = initStats();
+
   // listen to the resize events
   window.addEventListener("resize", onResize, false);
 
@@ -21,7 +24,7 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   // show axes in the screen
-  var axes = new THREE.AxesHelper(30);
+  let axes = new THREE.AxesHelper(30);
   scene.add(axes);
 
   addPlane();
@@ -34,8 +37,14 @@ function init() {
   // add the output of the renderer to the html element
   document.getElementById("three-output").appendChild(renderer.domElement);
 
-  // render the scene
-  renderer.render(scene, camera);
+  renderScene()
+  function renderScene() {
+    stats.update();
+
+    // render using requestAnimationFrame
+    requestAnimationFrame(renderScene);
+    renderer.render(scene, camera);
+  }
 }
 
 function onResize() {
@@ -60,9 +69,9 @@ function addPlane() {
 
 function addSphere() {
   // create a sphere
-  var sphereGeometry = new THREE.SphereGeometry(4, 20, 20);
-  var sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x7777ff });
-  var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+  let sphereGeometry = new THREE.SphereGeometry(4, 20, 20);
+  let sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x7777ff });
+  let sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 
   // position the sphere
   sphere.position.set(0, 5, 10);
