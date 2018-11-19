@@ -34,13 +34,30 @@ function init() {
   camera.position.set(-30, 40, 45);
   camera.lookAt(scene.position);
 
+  document.addEventListener("keydown", onDocumentKeyDown, false);
+  function onDocumentKeyDown(event) {
+    let speed = 1;
+    let keyCode = event.which;
+    console.log(keyCode)
+      if (keyCode == 38) {
+          s1.position.z -= speed;
+      } else if (keyCode == 40) {
+          s1.position.z += speed;
+      } else if (keyCode == 37) {
+          s1.position.x -= speed;
+      } else if (keyCode == 39) {
+          s1.position.x += speed;
+      } else if (keyCode == 32) {
+          s1.position.set(0, 4, 0);
+      }
+  };
+
   // add the output of the renderer to the html element
   document.getElementById("three-output").appendChild(renderer.domElement);
 
   renderScene()
   function renderScene() {
     stats.update();
-    s1.position.x += 0.01
     // render using requestAnimationFrame
     requestAnimationFrame(renderScene);
     renderer.render(scene, camera);
