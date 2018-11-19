@@ -28,7 +28,7 @@ function init() {
   scene.add(axes);
 
   addPlane();
-  addSphere();
+  let s1 = addSphere();
   
   // position and point the camera to the center of the scene
   camera.position.set(-30, 40, 45);
@@ -40,7 +40,7 @@ function init() {
   renderScene()
   function renderScene() {
     stats.update();
-
+    s1.position.x += 0.01
     // render using requestAnimationFrame
     requestAnimationFrame(renderScene);
     renderer.render(scene, camera);
@@ -78,4 +78,5 @@ function addSphere() {
 
   // add the sphere to the scene
   scene.add(sphere);
+  return sphere;
 }
