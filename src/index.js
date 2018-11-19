@@ -1,15 +1,18 @@
+let scene,camera,renderer;
+
+
 function init() {
   // listen to the resize events
   window.addEventListener("resize", onResize, false);
 
   //create a scene
-  let scene = new THREE.Scene();
+  scene = new THREE.Scene();
 
   // create a camera, which defines where we're looking at.
-  let camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 1000);
 
   // create a render and set the size
-  let renderer = new THREE.WebGLRenderer();
+  renderer = new THREE.WebGLRenderer();
   renderer.setClearColor(new THREE.Color(0x000000));
   renderer.setSize(window.innerWidth, window.innerHeight);
 
