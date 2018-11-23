@@ -30,7 +30,7 @@ function init() {
   let s1 = addSphere();
   
   // position and point the camera to the center of the scene
-  camera.position.set(-30, 40, 45);
+  camera.position.set(-40, 100, 50);
   camera.lookAt(scene.position);
 
   // add spotlight for the shadows
@@ -86,12 +86,12 @@ function onResize() {
 function addPlane() {
   let planeGeometry = new THREE.PlaneGeometry(50, 50);
   let planeMaterial = new THREE.MeshLambertMaterial({
-    color: 0xaaaaaa
+    color: 0xbbbbbb
   });
   let plane = new THREE.Mesh(planeGeometry, planeMaterial);
   // rotate and position the plane
   plane.rotation.x = -0.5 * Math.PI;
-  plane.position.set(10, 0, 0);
+  plane.position.set(0, 0, 0);
   plane.receiveShadow = true;
 
   // add the plane to the scene
