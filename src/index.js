@@ -12,16 +12,15 @@ function init() {
 
   // create a camera, which defines where we're looking at.
   camera = new THREE.PerspectiveCamera(
-    45,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
+    45,window.innerWidth / window.innerHeight,
+    0.1,1000
   );
 
   // create a render and set the size
   renderer = new THREE.WebGLRenderer();
   renderer.setClearColor(new THREE.Color(0x000000));
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
 
   // show axes in the screen
   let axes = new THREE.AxesHelper(30);
@@ -33,6 +32,19 @@ function init() {
   // position and point the camera to the center of the scene
   camera.position.set(-30, 40, 45);
   camera.lookAt(scene.position);
+
+  // add spotlight for the shadows
+  var spotLight = new THREE.SpotLight(0xFFFFFF);
+  spotLight.position.set(-40, 40, -15);
+  spotLight.castShadow = true;
+  spotLight.shadow.mapSize = new THREE.Vector2(4096, 4096);
+  spotLight.shadow.camera.far = 130;
+  spotLight.shadow.camera.near = 40;
+  scene.add(spotLight);
+
+
+  let ambienLight = new THREE.AmbientLight(0x808080);
+  scene.add(ambienLight);
 
   document.addEventListener("keydown", onDocumentKeyDown, false);
   function onDocumentKeyDown(event) {
@@ -51,6 +63,7 @@ function init() {
           s1.position.set(0, 4, 0);
       }
   };
+
 
   // add the output of the renderer to the html element
   document.getElementById("three-output").appendChild(renderer.domElement);
@@ -72,13 +85,14 @@ function onResize() {
 
 function addPlane() {
   let planeGeometry = new THREE.PlaneGeometry(50, 50);
-  let planeMaterial = new THREE.MeshBasicMaterial({
+  let planeMaterial = new THREE.MeshLambertMaterial({
     color: 0xaaaaaa
   });
   let plane = new THREE.Mesh(planeGeometry, planeMaterial);
   // rotate and position the plane
   plane.rotation.x = -0.5 * Math.PI;
   plane.position.set(10, 0, 0);
+  plane.receiveShadow = true;
 
   // add the plane to the scene
   scene.add(plane);
@@ -87,11 +101,12 @@ function addPlane() {
 function addSphere() {
   // create a sphere
   let sphereGeometry = new THREE.SphereGeometry(4, 20, 20);
-  let sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x7777ff });
+  let sphereMaterial = new THREE.MeshLambertMaterial({ color: 0x7777ff });
   let sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-
+  
   // position the sphere
   sphere.position.set(0, 5, 10);
+  sphere.castShadow = true;
 
   // add the sphere to the scene
   scene.add(sphere);
