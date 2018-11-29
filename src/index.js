@@ -36,9 +36,6 @@ function init() {
 
   addPlane();
   let s1 = addSphere();
-  setInterval(() => {
-    addSphere()
-  }, 5000);
 
   // position and point the camera to the center of the scene
   camera.position.set(-40, 100, 50);
@@ -56,34 +53,22 @@ function init() {
   let ambienLight = new THREE.AmbientLight(0x808080);
   scene.add(ambienLight);
 
-  let keyCode = 0;
+  let zspeed = 0,yspeed = 0,xspeed = 0;
   document.addEventListener("keydown", onDocumentKeyDown, false);
   function onDocumentKeyDown(event) {
-    if(keyCode == event.which){
-      return;
+    let keyCode = event.which;
+    console.log(keyCode);
+    if (keyCode == 38) {
+      zspeed -= 1;
+    } else if (keyCode == 40) {
+      zspeed += 1;
+    } else if (keyCode == 37) {
+      xspeed -= 1;
+    } else if (keyCode == 39) {
+      xspeed += 1;
     }
-    keyCode = event.which;
-    console.log(keyCode)
-      if (keyCode == 38) {
-          // s1.position.z -= speed;
-          s1.setLinearVelocity({z: -20, y: 0, x: 0 }); 
-      } else if (keyCode == 40) {
-          // s1.position.z += speed;
-          s1.setLinearVelocity({z: 20, y: 0, x: 0 }); 
-      } else if (keyCode == 37) {
-          // s1.position.x -= speed;
-          s1.setLinearVelocity({z: 0, y: 0, x: -20 }); 
-      } else if (keyCode == 39) {
-          // s1.position.x += speed;
-          s1.setLinearVelocity({z: 0, y:0, x: 20 }); 
-      } else if(keyCode == 67){
-        s1.setLinearVelocity({z: 0, y:50, x: 0 }); 
-      }
-      else if (keyCode == 32) {
-          // s1.position.set(0, 4, 0);
-          s1.setLinearVelocity({z: 0, y: 0, x: 0 }); 
-      }
-    };
+    s1.setLinearVelocity({ z: zspeed, y: yspeed, x: xspeed });
+  }
 
   // add the output of the renderer to the html element
   document.getElementById("three-output").appendChild(renderer.domElement);
@@ -115,7 +100,7 @@ function addPlane() {
     bounciness
   );
   let plane = new Physijs.BoxMesh(
-    new THREE.BoxGeometry(60, 1, 60),
+    new THREE.BoxGeometry(70, 1, 70),
     ground_material,
     0
   );
@@ -132,16 +117,18 @@ function addPlane() {
 function addSphere() {
   // create a sphere
   let sphere = new Physijs.SphereMesh(
-    new THREE.SphereGeometry(4,30,30),
+    new THREE.SphereGeometry(4, 30, 30),
     Physijs.createMaterial(
-      new THREE.MeshStandardMaterial({
-        color: 0x2194ce
-      },
-      friction,
-      bounciness)
+      new THREE.MeshStandardMaterial(
+        {
+          color: 0x2194ce
+        },
+        friction,
+        bounciness
+      )
     )
   );
-  
+
   // position the sphere
   sphere.position.set(0, 10, 10);
   sphere.castShadow = true;
