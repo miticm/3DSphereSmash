@@ -1,4 +1,6 @@
 let scene, camera, renderer;
+let friction = 0;
+let bounciness = 1;
 
 function init() {
   // Add phys environment
@@ -12,7 +14,7 @@ function init() {
 
   //create a scene
   scene = new Physijs.Scene();
-  scene.setGravity(new THREE.Vector3(0, -10, 0));
+  scene.setGravity(new THREE.Vector3(0, -50, 0));
 
   // create a camera, which defines where we're looking at.
   camera = new THREE.PerspectiveCamera(
@@ -33,7 +35,10 @@ function init() {
   // scene.add(axes);
 
   addPlane();
-  addSphere();
+  let s1 = addSphere();
+  setInterval(() => {
+    addSphere()
+  }, 2000);
 
   // position and point the camera to the center of the scene
   camera.position.set(-40, 100, 50);
@@ -67,7 +72,7 @@ function init() {
   //     } else if (keyCode == 32) {
   //         s1.position.set(0, 4, 0);
   //     }
-  // };
+  //   };
 
   // add the output of the renderer to the html element
   document.getElementById("three-output").appendChild(renderer.domElement);
@@ -92,11 +97,11 @@ function onResize() {
 function addPlane() {
   let textureLoader = new THREE.TextureLoader();
   let ground_material = Physijs.createMaterial(
-    new THREE.MeshStandardMaterial({
+    new THREE.MeshPhongMaterial({
       map: textureLoader.load("../assets/metal-floor.jpg")
     }),
-    0.9,
-    0.3
+    friction,
+    bounciness
   );
   let plane = new Physijs.BoxMesh(
     new THREE.BoxGeometry(60, 1, 60),
@@ -115,23 +120,19 @@ function addPlane() {
 
 function addSphere() {
   // create a sphere
-  let sphereGeometry = new THREE.SphereGeometry(4, 20, 20);
-  // let sphereMaterial = new THREE.MeshLambertMaterial({ color: 0x7777ff });
-  // let sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-
-  let sphere = new Physijs.BoxMesh(
-    sphereGeometry,
+  let sphere = new Physijs.SphereMesh(
+    new THREE.SphereGeometry(4, 30,30),
     Physijs.createMaterial(
       new THREE.MeshStandardMaterial({
-        color: 0x8777ff,
-        transparent: false,
-        opacity: 1
-      })
+        color: 0x2194ce
+      },
+      friction,
+      bounciness)
     )
   );
-
+  
   // position the sphere
-  sphere.position.set(0, 30, 10);
+  sphere.position.set(0, 100, 10);
   sphere.castShadow = true;
 
   // add the sphere to the scene
