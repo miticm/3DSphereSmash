@@ -1,6 +1,9 @@
 let scene, camera, renderer;
 
 function init() {
+  // Add phys environment
+  Physijs.scripts.worker = "../libs/physijs/physijs_worker.js";
+  Physijs.scripts.ammo = "./ammo.js";
 
   let stats = initStats();
 
@@ -8,12 +11,15 @@ function init() {
   window.addEventListener("resize", onResize, false);
 
   //create a scene
-  scene = new THREE.Scene();
+  scene = new Physijs.Scene();
+  scene.setGravity(new THREE.Vector3(0, -10, 0));
 
   // create a camera, which defines where we're looking at.
   camera = new THREE.PerspectiveCamera(
-    45,window.innerWidth / window.innerHeight,
-    0.1,1000
+    45,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
   );
 
   // create a render and set the size
@@ -22,19 +28,19 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
 
-  // show axes in the screen
-  let axes = new THREE.AxesHelper(30);
-  scene.add(axes);
+  // // show axes in the screen
+  // let axes = new THREE.AxesHelper(30);
+  // scene.add(axes);
 
   addPlane();
-  let s1 = addSphere();
-  
+  addSphere();
+
   // position and point the camera to the center of the scene
   camera.position.set(-40, 100, 50);
   camera.lookAt(scene.position);
 
   // add spotlight for the shadows
-  var spotLight = new THREE.SpotLight(0xFFFFFF);
+  let spotLight = new THREE.SpotLight(0xffffff);
   spotLight.position.set(-40, 40, -15);
   spotLight.castShadow = true;
   spotLight.shadow.mapSize = new THREE.Vector2(4096, 4096);
@@ -42,38 +48,38 @@ function init() {
   spotLight.shadow.camera.near = 40;
   scene.add(spotLight);
 
-
   let ambienLight = new THREE.AmbientLight(0x808080);
   scene.add(ambienLight);
 
-  document.addEventListener("keydown", onDocumentKeyDown, false);
-  function onDocumentKeyDown(event) {
-    let speed = 1;
-    let keyCode = event.which;
-    console.log(keyCode)
-      if (keyCode == 38) {
-          s1.position.z -= speed;
-      } else if (keyCode == 40) {
-          s1.position.z += speed;
-      } else if (keyCode == 37) {
-          s1.position.x -= speed;
-      } else if (keyCode == 39) {
-          s1.position.x += speed;
-      } else if (keyCode == 32) {
-          s1.position.set(0, 4, 0);
-      }
-  };
-
+  // document.addEventListener("keydown", onDocumentKeyDown, false);
+  // function onDocumentKeyDown(event) {
+  //   let speed = 1;
+  //   let keyCode = event.which;
+  //   console.log(keyCode)
+  //     if (keyCode == 38) {
+  //         s1.position.z -= speed;
+  //     } else if (keyCode == 40) {
+  //         s1.position.z += speed;
+  //     } else if (keyCode == 37) {
+  //         s1.position.x -= speed;
+  //     } else if (keyCode == 39) {
+  //         s1.position.x += speed;
+  //     } else if (keyCode == 32) {
+  //         s1.position.set(0, 4, 0);
+  //     }
+  // };
 
   // add the output of the renderer to the html element
   document.getElementById("three-output").appendChild(renderer.domElement);
 
-  renderScene()
+  renderScene();
+
   function renderScene() {
     stats.update();
     // render using requestAnimationFrame
     requestAnimationFrame(renderScene);
     renderer.render(scene, camera);
+    scene.simulate();
   }
 }
 
@@ -84,15 +90,24 @@ function onResize() {
 }
 
 function addPlane() {
-  let planeGeometry = new THREE.PlaneGeometry(50, 50);
-  let planeMaterial = new THREE.MeshLambertMaterial({
-    color: 0xbbbbbb
-  });
-  let plane = new THREE.Mesh(planeGeometry, planeMaterial);
-  // rotate and position the plane
-  plane.rotation.x = -0.5 * Math.PI;
+  let textureLoader = new THREE.TextureLoader();
+  let ground_material = Physijs.createMaterial(
+    new THREE.MeshStandardMaterial({
+      map: textureLoader.load("../assets/metal-floor.jpg")
+    }),
+    0.9,
+    0.3
+  );
+  let plane = new Physijs.BoxMesh(
+    new THREE.BoxGeometry(60, 1, 60),
+    ground_material,
+    0
+  );
+
+  //plane.rotation.x = -0.5 * Math.PI;
   plane.position.set(0, 0, 0);
   plane.receiveShadow = true;
+  plane.castShadow = true;
 
   // add the plane to the scene
   scene.add(plane);
@@ -101,11 +116,22 @@ function addPlane() {
 function addSphere() {
   // create a sphere
   let sphereGeometry = new THREE.SphereGeometry(4, 20, 20);
-  let sphereMaterial = new THREE.MeshLambertMaterial({ color: 0x7777ff });
-  let sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-  
+  // let sphereMaterial = new THREE.MeshLambertMaterial({ color: 0x7777ff });
+  // let sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+
+  let sphere = new Physijs.BoxMesh(
+    sphereGeometry,
+    Physijs.createMaterial(
+      new THREE.MeshStandardMaterial({
+        color: 0x8777ff,
+        transparent: false,
+        opacity: 1
+      })
+    )
+  );
+
   // position the sphere
-  sphere.position.set(0, 5, 10);
+  sphere.position.set(0, 30, 10);
   sphere.castShadow = true;
 
   // add the sphere to the scene
