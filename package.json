@@ -1,0 +1,17 @@
+{
+  "name": "3DSphereSmash",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miticm/3DSphereSmash"
+  },
+  "keywords": [],
+  "author": "Tianchi, Eli, Nicholas",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}

@@ -1,5 +1,5 @@
 let scene, camera, renderer;
-let friction = 0;
+let friction = 1;
 let bounciness = 1;
 
 function init() {
