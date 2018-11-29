@@ -14,7 +14,7 @@ function init() {
 
   //create a scene
   scene = new Physijs.Scene();
-  scene.setGravity(new THREE.Vector3(0, -50, 0));
+  scene.setGravity(new THREE.Vector3(0, -100, 0));
 
   // create a camera, which defines where we're looking at.
   camera = new THREE.PerspectiveCamera(
@@ -36,9 +36,12 @@ function init() {
 
   addPlane();
   let s1 = addSphere();
-  setInterval(() => {
-    addSphere()
-  }, 2000);
+  setTimeout(() => {
+    addSphere();
+  }, 1000);
+  // setInterval(() => {
+  //   addSphere()
+  // }, 2000);
 
   // position and point the camera to the center of the scene
   camera.position.set(-40, 100, 50);
@@ -56,23 +59,30 @@ function init() {
   let ambienLight = new THREE.AmbientLight(0x808080);
   scene.add(ambienLight);
 
-  // document.addEventListener("keydown", onDocumentKeyDown, false);
-  // function onDocumentKeyDown(event) {
-  //   let speed = 1;
-  //   let keyCode = event.which;
-  //   console.log(keyCode)
-  //     if (keyCode == 38) {
-  //         s1.position.z -= speed;
-  //     } else if (keyCode == 40) {
-  //         s1.position.z += speed;
-  //     } else if (keyCode == 37) {
-  //         s1.position.x -= speed;
-  //     } else if (keyCode == 39) {
-  //         s1.position.x += speed;
-  //     } else if (keyCode == 32) {
-  //         s1.position.set(0, 4, 0);
-  //     }
-  //   };
+  document.addEventListener("keydown", onDocumentKeyDown, false);
+  function onDocumentKeyDown(event) {
+    let keyCode = event.which;
+    console.log(keyCode)
+      if (keyCode == 38) {
+          // s1.position.z -= speed;
+          s1.setLinearVelocity({z: -20, y: 0, x: 0 }); 
+      } else if (keyCode == 40) {
+          // s1.position.z += speed;
+          s1.setLinearVelocity({z: 20, y: 0, x: 0 }); 
+      } else if (keyCode == 37) {
+          // s1.position.x -= speed;
+          s1.setLinearVelocity({z: 0, y: 0, x: -20 }); 
+      } else if (keyCode == 39) {
+          // s1.position.x += speed;
+          s1.setLinearVelocity({z: 0, y:0, x: 20 }); 
+      } else if(keyCode == 67){
+        s1.setLinearVelocity({z: 0, y:50, x: 0 }); 
+      }
+      else if (keyCode == 32) {
+          // s1.position.set(0, 4, 0);
+          s1.setLinearVelocity({z: 0, y: 0, x: 0 }); 
+      }
+    };
 
   // add the output of the renderer to the html element
   document.getElementById("three-output").appendChild(renderer.domElement);
@@ -121,7 +131,7 @@ function addPlane() {
 function addSphere() {
   // create a sphere
   let sphere = new Physijs.SphereMesh(
-    new THREE.SphereGeometry(4, 30,30),
+    new THREE.SphereGeometry(4,30,30),
     Physijs.createMaterial(
       new THREE.MeshStandardMaterial({
         color: 0x2194ce
@@ -132,7 +142,7 @@ function addSphere() {
   );
   
   // position the sphere
-  sphere.position.set(0, 100, 10);
+  sphere.position.set(0, 10, 10);
   sphere.castShadow = true;
 
   // add the sphere to the scene
