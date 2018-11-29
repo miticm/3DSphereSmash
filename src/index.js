@@ -36,12 +36,9 @@ function init() {
 
   addPlane();
   let s1 = addSphere();
-  setTimeout(() => {
-    addSphere();
-  }, 1000);
-  // setInterval(() => {
-  //   addSphere()
-  // }, 2000);
+  setInterval(() => {
+    addSphere()
+  }, 5000);
 
   // position and point the camera to the center of the scene
   camera.position.set(-40, 100, 50);
