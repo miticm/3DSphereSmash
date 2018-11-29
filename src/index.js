@@ -59,9 +59,13 @@ function init() {
   let ambienLight = new THREE.AmbientLight(0x808080);
   scene.add(ambienLight);
 
+  let keyCode = 0;
   document.addEventListener("keydown", onDocumentKeyDown, false);
   function onDocumentKeyDown(event) {
-    let keyCode = event.which;
+    if(keyCode == event.which){
+      return;
+    }
+    keyCode = event.which;
     console.log(keyCode)
       if (keyCode == 38) {
           // s1.position.z -= speed;
