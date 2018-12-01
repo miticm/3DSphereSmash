@@ -53,19 +53,41 @@ function init() {
   let ambienLight = new THREE.AmbientLight(0x808080);
   scene.add(ambienLight);
 
-  let zspeed = 0,yspeed = 0,xspeed = 0;
-  document.addEventListener("keydown", onDocumentKeyDown, false);
-  function onDocumentKeyDown(event) {
-    let keyCode = event.which;
-    console.log(keyCode);
-    if (keyCode == 38) {
-      zspeed -= 1;
-    } else if (keyCode == 40) {
-      zspeed += 1;
-    } else if (keyCode == 37) {
-      xspeed -= 1;
-    } else if (keyCode == 39) {
-      xspeed += 1;
+  let zspeed = 0,yspeed = 0,xspeed = 0,acceleration = 1;
+  let keymap = {38:false,40:false,37:false,39:false,32:false};
+  document.addEventListener("keydown", onKeyDown);
+  document.addEventListener("keyup", onKeyUp);
+  function onKeyUp(event) {
+    console.log(event.which);
+    if(event.which in keymap){
+      keymap[event.which] = false;
+    }
+    updateSpeed()
+  }
+  function onKeyDown(event) {
+    console.log(event.which);
+    if(event.which in keymap){
+      keymap[event.which] = true;
+    }
+    updateSpeed()
+  }
+  function updateSpeed() {
+    if(keymap[32]){
+      acceleration = 5;
+    }else{
+      acceleration = 1;
+    }
+    if (keymap[38]) {
+      zspeed -= acceleration;
+    } 
+    if (keymap[40]) {
+      zspeed += acceleration;
+    } 
+    if (keymap[37]) {
+      xspeed -= acceleration;
+    } 
+    if (keymap[39]) {
+      xspeed += acceleration;
     }
     s1.setLinearVelocity({ z: zspeed, y: yspeed, x: xspeed });
   }
