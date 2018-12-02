@@ -15,11 +15,19 @@ const io = socketio(server);
 io.on("connect",socket=>{
   console.log(`Connected with ${socket.id}`);
 
+  socket.emit('connected',{
+    id:socket.id
+  })
+
+  if(io.engine.clientsCount == 2){
+    io.sockets.emit("start");
+  }
+
   socket.on("disconnect",()=>{
     console.log(`Disconnected with ${socket.id}`)
   })
   socket.on('speed',data=>{
-    socket.emit("updateSpeed",{
+    io.sockets.emit("updateSpeed",{
       speed:data.speed
     })
   })

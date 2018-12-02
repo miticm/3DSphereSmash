@@ -1,12 +1,22 @@
 const socket = io.connect(`http://localhost:8888`);
 
+socket.on("connected",data=>{
+  id = data.id
+})
+socket.on("start",()=>{
+  init();
+})
 socket.on("updateSpeed",data=>{
+  xspeed = data.speed.x;
+  zspeed = data.speed.z;
   sphere.setLinearVelocity(data.speed);
 })
 
 let scene, camera, renderer;
 let sphere;
 let friction = 1, restitution = 1;
+let id;
+
 function init() {
   // Add phys environment
   Physijs.scripts.worker = "../libs/physijs/physijs_worker.js";
@@ -64,6 +74,7 @@ function init() {
   renderScene();
   function renderScene() {
     stats.update();
+    updateSpeed();
     // render using requestAnimationFrame
     requestAnimationFrame(renderScene);
     renderer.render(scene, camera);
@@ -121,50 +132,47 @@ function addSphere(x,y,z) {
   sphere.position.set(x,y,z);
   sphere.castShadow = true;
 
-  let zspeed = 0,xspeed = 0,acceleration = 1;
-  let keymap = {38:false,40:false,37:false,39:false,32:false};
-  document.addEventListener("keydown", onKeyDown);
-  document.addEventListener("keyup", onKeyUp);
-  function onKeyUp(event) {
-    if(event.which in keymap){
-      keymap[event.which] = false;
-    }
-  }
-  function onKeyDown(event) {
-    if(event.which in keymap){
-      keymap[event.which] = true;
-    }
-  }
-
-  function updateSpeed() {
-    if(keymap[32]){
-      acceleration = 5;
-    }else{
-      acceleration = 1;
-    }
-    if (keymap[38]) {
-      zspeed -= acceleration;
-    } 
-    if (keymap[40]) {
-      zspeed += acceleration;
-    } 
-    if (keymap[37]) {
-      xspeed -= acceleration;
-    } 
-    if (keymap[39]) {
-      xspeed += acceleration;
-    }
-    socket.emit("speed",{
-      speed:{z: zspeed, y: sphere.getLinearVelocity().y, x: xspeed}
-    })
-    //sphere.setLinearVelocity({z: zspeed, y: sphere.getLinearVelocity().y, x: xspeed})
-  }
-
-  setInterval(() => {
-    updateSpeed()
-  }, 10);
-
   // add the sphere to the scene
   scene.add(sphere);
   return sphere;
+}
+
+
+// speed control with arrow keys
+let zspeed = 0,xspeed = 0,acceleration = 1;
+let keymap = {38:false,40:false,37:false,39:false,32:false};
+document.addEventListener("keydown", onKeyDown);
+document.addEventListener("keyup", onKeyUp);
+function onKeyUp(event) {
+  if(event.which in keymap){
+    keymap[event.which] = false;
+  }
+}
+function onKeyDown(event) {
+  if(event.which in keymap){
+    keymap[event.which] = true;
+  }
+}
+
+function updateSpeed() {
+  if(keymap[32]){
+    acceleration = 5;
+  }else{
+    acceleration = 1;
+  }
+  if (keymap[38]) {
+    zspeed -= acceleration;
+  } 
+  if (keymap[40]) {
+    zspeed += acceleration;
+  } 
+  if (keymap[37]) {
+    xspeed -= acceleration;
+  } 
+  if (keymap[39]) {
+    xspeed += acceleration;
+  }
+  socket.emit("speed",{
+    speed:{z: zspeed, y: sphere.getLinearVelocity().y, x: xspeed}
+  })
 }
