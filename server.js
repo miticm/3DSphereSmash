@@ -18,4 +18,9 @@ io.on("connect",socket=>{
   socket.on("disconnect",()=>{
     console.log(`Disconnected with ${socket.id}`)
   })
+  socket.on('speed',data=>{
+    socket.emit("updateSpeed",{
+      speed:data.speed
+    })
+  })
 })

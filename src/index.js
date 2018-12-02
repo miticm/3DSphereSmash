@@ -1,6 +1,11 @@
 const socket = io.connect(`http://localhost:8888`);
 
+socket.on("updateSpeed",data=>{
+  sphere.setLinearVelocity(data.speed);
+})
+
 let scene, camera, renderer;
+let sphere;
 let friction = 1, restitution = 1;
 function init() {
   // Add phys environment
@@ -34,8 +39,8 @@ function init() {
   // let axes = new THREE.AxesHelper(30);
   // scene.add(axes);
 
-  let p1 = addPlane();
-  addSphere(0,10,0);
+  addPlane();
+  sphere = addSphere(0,10,0);
 
   // position and point the camera to the center of the scene
   camera.position.set(0, 100, 70);
@@ -149,7 +154,10 @@ function addSphere(x,y,z) {
     if (keymap[39]) {
       xspeed += acceleration;
     }
-    sphere.setLinearVelocity({z: zspeed, y: sphere.getLinearVelocity().y, x: xspeed})
+    socket.emit("speed",{
+      speed:{z: zspeed, y: sphere.getLinearVelocity().y, x: xspeed}
+    })
+    //sphere.setLinearVelocity({z: zspeed, y: sphere.getLinearVelocity().y, x: xspeed})
   }
 
   setInterval(() => {
