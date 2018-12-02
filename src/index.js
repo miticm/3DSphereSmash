@@ -1,3 +1,5 @@
+const socket = io.connect(`http://localhost:8888`);
+
 let scene, camera, renderer;
 let friction = 1, restitution = 1;
 function init() {
