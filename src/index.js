@@ -1,21 +1,31 @@
 const socket = io.connect(`http://localhost:8888`);
 
 socket.on("connected",data=>{
-  id = data.id
-})
-socket.on("start",()=>{
-  init();
-})
-socket.on("updateSpeed",data=>{
-  xspeed = data.speed.x;
-  zspeed = data.speed.z;
-  sphere.setLinearVelocity(data.speed);
+  index = data.index
+  if(index == 0){
+    p2Index = 1;
+  }else{
+    p2Index = 0;
+  }
 })
 
+socket.on("start",()=>{
+  init();
+  spheres = [addSphere(1,4,1),addSphere(9,4,9)];
+  speedControl();
+})
+
+socket.on("update",data=>{
+  spheres[0].setLinearVelocity(data.players[0].speed)
+  spheres[1].setLinearVelocity(data.players[1].speed)
+})
+
+
 let scene, camera, renderer;
-let sphere;
+let spheres;
 let friction = 1, restitution = 1;
-let id;
+let myIndex,p2Index;
+let playersData = {};
 
 function init() {
   // Add phys environment
@@ -45,12 +55,7 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
 
-  // // show axes in the screen
-  // let axes = new THREE.AxesHelper(30);
-  // scene.add(axes);
-
   addPlane();
-  sphere = addSphere(0,10,0);
 
   // position and point the camera to the center of the scene
   camera.position.set(0, 100, 70);
@@ -74,7 +79,6 @@ function init() {
   renderScene();
   function renderScene() {
     stats.update();
-    updateSpeed();
     // render using requestAnimationFrame
     requestAnimationFrame(renderScene);
     renderer.render(scene, camera);
@@ -138,41 +142,45 @@ function addSphere(x,y,z) {
 }
 
 
-// speed control with arrow keys
-let zspeed = 0,xspeed = 0,acceleration = 1;
-let keymap = {38:false,40:false,37:false,39:false,32:false};
-document.addEventListener("keydown", onKeyDown);
-document.addEventListener("keyup", onKeyUp);
-function onKeyUp(event) {
-  if(event.which in keymap){
-    keymap[event.which] = false;
+function speedControl() {
+  let zspeed = 0,xspeed = 0,acceleration = 1;
+  let keymap = {38:false,40:false,37:false,39:false,32:false};
+  document.addEventListener("keydown", onKeyDown);
+  document.addEventListener("keyup", onKeyUp);
+  function onKeyUp(event) {
+    if(event.which in keymap){
+      keymap[event.which] = false;
+    }
   }
-}
-function onKeyDown(event) {
-  if(event.which in keymap){
-    keymap[event.which] = true;
+  function onKeyDown(event) {
+    if(event.which in keymap){
+      keymap[event.which] = true;
+    }
   }
-}
 
-function updateSpeed() {
-  if(keymap[32]){
-    acceleration = 5;
-  }else{
-    acceleration = 1;
+  function updateSpeed() {
+    if(keymap[32]){
+      acceleration = 5;
+    }else{
+      acceleration = 1;
+    }
+    if (keymap[38]) {
+      zspeed -= acceleration;
+    } 
+    if (keymap[40]) {
+      zspeed += acceleration;
+    } 
+    if (keymap[37]) {
+      xspeed -= acceleration;
+    } 
+    if (keymap[39]) {
+      xspeed += acceleration;
+    }
+    playersData[index] = {z: zspeed, y: spheres[index].getLinearVelocity().y, x: xspeed}
+    playersData[p2Index] = spheres[p2Index].getLinearVelocity()
+    socket.emit("speed",playersData)
   }
-  if (keymap[38]) {
-    zspeed -= acceleration;
-  } 
-  if (keymap[40]) {
-    zspeed += acceleration;
-  } 
-  if (keymap[37]) {
-    xspeed -= acceleration;
-  } 
-  if (keymap[39]) {
-    xspeed += acceleration;
-  }
-  socket.emit("speed",{
-    speed:{z: zspeed, y: sphere.getLinearVelocity().y, x: xspeed}
-  })
+  setInterval(() => {
+    updateSpeed()
+  }, 50);
 }
