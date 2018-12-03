@@ -12,16 +12,18 @@ socket.on("connected",data=>{
 socket.on("start",()=>{
   init();
   spheres = [addSphere(1,4,1),addSphere(9,4,9)];
-  speedControl();
+  renderScene();
 })
 
 socket.on("update",data=>{
   spheres[0].setLinearVelocity(data.players[0].speed)
   spheres[1].setLinearVelocity(data.players[1].speed)
+  xspeed = data.players[index].speed.x;
+  zspeed = data.players[index].speed.z;
 })
 
 
-let scene, camera, renderer;
+let scene, camera, renderer,stats;
 let spheres;
 let friction = 1, restitution = 1;
 let myIndex,p2Index;
@@ -31,8 +33,8 @@ function init() {
   // Add phys environment
   Physijs.scripts.worker = "../libs/physijs/physijs_worker.js";
   Physijs.scripts.ammo = "./ammo.js";
-
-  let stats = initStats();
+  
+  stats = initStats();
 
   // listen to the resize events
   window.addEventListener("resize", onResize, false);
@@ -75,15 +77,15 @@ function init() {
 
   // add the output of the renderer to the html element
   document.getElementById("three-output").appendChild(renderer.domElement);
+}
 
-  renderScene();
-  function renderScene() {
-    stats.update();
-    // render using requestAnimationFrame
-    requestAnimationFrame(renderScene);
-    renderer.render(scene, camera);
-    scene.simulate();
-  }
+function renderScene() {
+  stats.update();
+  updateSpeed();
+  // render using requestAnimationFrame
+  requestAnimationFrame(renderScene);
+  renderer.render(scene, camera);
+  scene.simulate();
 }
 
 function onResize() {
@@ -142,7 +144,7 @@ function addSphere(x,y,z) {
 }
 
 
-function speedControl() {
+
   let zspeed = 0,xspeed = 0,acceleration = 1;
   let keymap = {38:false,40:false,37:false,39:false,32:false};
   document.addEventListener("keydown", onKeyDown);
@@ -180,7 +182,3 @@ function speedControl() {
     playersData[p2Index] = spheres[p2Index].getLinearVelocity()
     socket.emit("speed",playersData)
   }
-  setInterval(() => {
-    updateSpeed()
-  }, 50);
-}
