@@ -29,15 +29,17 @@ io.on("connect",socket=>{
 
   socket.on("disconnect",()=>{
     console.log(`Disconnected with ${socket.id}`)
-    players.splice(pIndex,1);
+    players = [];
   })
 
   socket.on('speed',data=>{
-    players[0].speed = data[0];
-    players[1].speed = data[1];
-    io.sockets.emit("update",{
-      players
-    })
+    if(players.length == 2){
+      players[0].speed = data[0];
+      players[1].speed = data[1];
+      io.sockets.emit("update",{
+        players
+      })
+    }
   })
 
 })
