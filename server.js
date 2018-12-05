@@ -60,11 +60,11 @@ io.on("connect", socket => {
       playerById(id).speed = data[p2Index];
       me.socket.emit("update", {
         me: {speed: me.speed},
-        opponent: {speed:playerById(id)
+        opponent: {speed: playerById(id).speed}
       });
       playerById(id).socket.emit("update", {
         me: {speed: playerById(id).speed},
-        opponent: {speed: me.speed }
+        opponent: {speed: me.speed}
       });
     }
   });
