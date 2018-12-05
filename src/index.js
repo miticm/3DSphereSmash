@@ -26,7 +26,7 @@ socket.on("update",data=>{
 let scene, camera, renderer,stats;
 let spheres;
 let friction = 1, restitution = 1;
-let myIndex,p2Index;
+let index,p2Index;
 let playersData = {};
 
 function init() {
@@ -41,6 +41,9 @@ function init() {
 
   //create a scene
   scene = new Physijs.Scene();
+  let spaceTexture = new THREE.TextureLoader().load( "./assets/space.jpg" );
+  scene.background = spaceTexture;
+
   scene.setGravity(new THREE.Vector3(0, -100, 0));
 
   // create a camera, which defines where we're looking at.
@@ -52,8 +55,8 @@ function init() {
   );
 
   // create a render and set the size
-  renderer = new THREE.WebGLRenderer();
-  renderer.setClearColor(new THREE.Color(0x000000));
+  renderer = new THREE.WebGLRenderer({ antialias: false,alpha:true });
+  renderer.setClearColor(new THREE.Color(0x000000,0));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
 
@@ -98,7 +101,7 @@ function addPlane() {
   let textureLoader = new THREE.TextureLoader();
   let p1_material = Physijs.createMaterial(
     new THREE.MeshPhongMaterial({
-      map: textureLoader.load("../assets/metal-floor.jpg")
+      map: textureLoader.load("./assets/metal-floor.jpg")
     }),
     friction,
     restitution

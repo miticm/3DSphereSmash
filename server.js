@@ -22,6 +22,8 @@ io.on("connect",socket=>{
   socket.emit('connected',{
     index: pIndex
   })
+  
+  //console.log(Object.keys(io.sockets.connected));
 
   if(io.engine.clientsCount == 2){
     io.sockets.emit("start");
@@ -30,6 +32,7 @@ io.on("connect",socket=>{
   socket.on("disconnect",()=>{
     console.log(`Disconnected with ${socket.id}`)
     players = [];
+    io.sockets.emit("disconnect");
   })
 
   socket.on('speed',data=>{
