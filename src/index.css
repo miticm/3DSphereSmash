@@ -1,4 +1,54 @@
+@import url('https://fonts.googleapis.com/css?family=Unlock');
+
 body {
   margin: 0;
   overflow: hidden;
+  background: black;
+}
+
+.container{
+  text-align: center;
+  font-family: 'Unlock', cursive;
+  font-size: 2rem;
+  width: 40%;
+  height: 14rem;
+  margin: 0 auto;
+  margin-top: 8rem;
+  color: maroon;
+  background: rgb(199, 207, 186);
+}
+
+input{
+  margin: 0 auto;
+  outline: none;
+  font-size: 2rem;
+  display: block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+h3{
+  margin: 0;
+  margin-bottom: 1rem;
+}
+
+.button {
+  margin-top: 1rem;
+  padding: 15px 25px;
+  font-size: 24px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: rgb(109, 7, 7);
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+.button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
 }
