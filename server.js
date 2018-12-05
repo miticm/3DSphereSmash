@@ -22,6 +22,7 @@ io.on("connect", socket => {
   console.log(`Connected with ${socket.id}`);
   let me = new player(socket.id, socket);
   players.push(me);
+  let opponent = {};
 
   var id = _.sample(pendings);
   let pIndex = 0;
@@ -46,8 +47,9 @@ io.on("connect", socket => {
     matches[id] = me.id;
     matches[me.id] = id;
     console.log(matches);
+    opponent = playerById(id);
     me.socket.emit("start");
-    playerById(id).socket.emit("start");
+    opponent.socket.emit("start");
   }
 
   socket.on("disconnect", () => {
@@ -55,18 +57,20 @@ io.on("connect", socket => {
   });
 
   socket.on('speed', data => {
-    if (playerById(id) !== false) {
-      me.speed = data[pIndex];
-      playerById(id).speed = data[p2Index];
-      me.socket.emit("update", {
-        me: {speed: me.speed},
-        opponent: {speed: playerById(id).speed}
-      });
-      playerById(id).socket.emit("update", {
-        me: {speed: playerById(id).speed},
-        opponent: {speed: me.speed}
-      });
+    if (!opponent || (Object.keys(opponent).length === 0 && opponent.constructor === Object)) {
+      opponent = playerById(matches[me.id]);
     }
+
+    me.speed = data[pIndex];
+    opponent.speed = data[p2Index];
+    me.socket.emit("update", {
+      me: {speed: me.speed},
+      opponent: {speed: opponent.speed}
+    });
+    opponent.socket.emit("update", {
+      me: {speed: opponent.speed},
+      opponent: {speed: me.speed}
+    });
   });
 
 });
@@ -86,5 +90,5 @@ function playerById(id) {
           return players[i];
   };
   
-  return false;
+  return {};
 }
