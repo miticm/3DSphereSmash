@@ -1,25 +1,29 @@
 const socket = io.connect(`http://localhost:8888`);
 
-socket.on("connected",data=>{
+socket.on("connected", data => {
   index = data.index
   if(index == 0){
     p2Index = 1;
   }else{
     p2Index = 0;
   }
+  console.log(index);
 })
 
-socket.on("start",()=>{
+socket.on("start", () => {
   init();
-  spheres = [addSphere(1,4,1),addSphere(9,4,9)];
+  spheres = [
+    addSphere(1,4,1),
+    addSphere(9,4,9)
+  ];
   renderScene();
 })
 
-socket.on("update",data=>{
-  spheres[0].setLinearVelocity(data.players[0].speed)
-  spheres[1].setLinearVelocity(data.players[1].speed)
-  xspeed = data.players[index].speed.x;
-  zspeed = data.players[index].speed.z;
+socket.on("update",data => {
+  spheres[index].setLinearVelocity(data.me.speed)
+  spheres[p2Index].setLinearVelocity(data.opponent.speed)
+  xspeed = data.me.speed.x;
+  zspeed = data.me.speed.z;
 })
 
 
