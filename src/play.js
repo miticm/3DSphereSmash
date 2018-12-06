@@ -39,7 +39,7 @@ socket.on("update",data => {
 
 let scene, camera, renderer,stats;
 let spheres;
-let friction = 1, restitution = 1;
+let friction = 0.7, restitution = 1;
 let index,p2Index;
 let playersData = {};
 
@@ -83,7 +83,7 @@ function init() {
 
   // add spotlight for the shadows
   let spotLight = new THREE.SpotLight(0xffffff);
-  spotLight.position.set(-40, 40, -15);
+  spotLight.position.set(0, 100, 0);
   spotLight.castShadow = true;
   spotLight.shadow.mapSize = new THREE.Vector2(2048, 2048);
   spotLight.shadow.camera.far = 130;
@@ -139,9 +139,15 @@ function addPlane() {
 
 function addCage() {
   let textureLoader = new THREE.TextureLoader();
+  let texture = textureLoader.load( './assets/fire.jpg', function ( texture ) {
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.offset.set( 0, 0 );
+    texture.repeat.set( 2,5 );
+  });
+
   let p1_material = Physijs.createMaterial(
     new THREE.MeshPhongMaterial({
-      map: textureLoader.load("./assets/metal-floor.jpg")
+      map: texture
     }),
     friction,
     restitution
@@ -228,7 +234,7 @@ function addSphere(x,y,z) {
   let textureLoader = new THREE.TextureLoader();
   let material = Physijs.createMaterial(
     new THREE.MeshPhongMaterial({
-      map: textureLoader.load("./assets/tianchi.png")
+      map: textureLoader.load("./assets/floor-wood.jpg")
     }),
     friction,
     restitution
