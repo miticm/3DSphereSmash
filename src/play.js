@@ -78,7 +78,7 @@ function init() {
   addCage();
 
   // position and point the camera to the center of the scene
-  camera.position.set(0, 200, 200);
+  camera.position.set(0, 150, 150);
   camera.lookAt(scene.position);
 
   // add spotlight for the shadows
@@ -146,20 +146,81 @@ function addCage() {
     friction,
     restitution
   );
-  let plane = new Physijs.BoxMesh(
-    new THREE.BoxGeometry(100, 1, 100),
+
+  // Floor of cage
+  let floor = new Physijs.BoxMesh(
+    new THREE.BoxGeometry(150, 1, 150),
     p1_material,
     0
   );
 
+  // Top wall of cage
+  let tWall = new Physijs.BoxMesh(
+    new THREE.BoxGeometry(50, 1, 150),
+    p1_material,
+    0
+  );
+
+  // Right Wall of cage
+  let rWall = new Physijs.BoxMesh(
+    new THREE.BoxGeometry(50, 1, 150),
+    p1_material,
+    0
+  );
+
+  // Bottom wall of cage
+  let bWall = new Physijs.BoxMesh(
+    new THREE.BoxGeometry(50, 1, 150),
+    p1_material,
+    0
+  );
+
+  // Left wall of cage
+  let lWall = new Physijs.BoxMesh(
+    new THREE.BoxGeometry(50, 1, 150),
+    p1_material,
+    0
+  );
+
+  // Set floor position
   //plane.rotation.x = -0.5 * Math.PI;
-  plane.position.set(0, -20, 0);
-  plane.receiveShadow = true;
-  plane.castShadow = true;
+  floor.position.set(0, -30, 0);
+  floor.receiveShadow = true;
+  floor.castShadow = true;
+
+  // Set top wall position
+  tWall.rotation.y = -0.5 * Math.PI;
+  tWall.rotation.z = -0.5 * Math.PI;
+  tWall.position.set(0, -5, 75);
+  tWall.receiveShadow = true;
+  tWall.castShadow = true;
+
+  // Set right wall position
+  rWall.rotation.z = 0.5 * Math.PI;
+  rWall.position.set(75, -5, 0);
+  rWall.receiveShadow = true;
+  rWall.castShadow = true;
+
+  // Set bottomo wall position
+  bWall.rotation.y = 0.5 * Math.PI;
+  bWall.rotation.z = 0.5 * Math.PI;
+  bWall.position.set(0, -5, -75);
+  bWall.receiveShadow = true;
+  bWall.castShadow = true;
+
+  // Set left wall position
+  lWall.rotation.z = -0.5 * Math.PI;
+  lWall.position.set(-75, -5, 0);
+  lWall.receiveShadow = true;
+  lWall.castShadow = true;
+
 
   // add the plane to the scene
-  scene.add(plane);
-  return plane;
+  scene.add(floor);
+  scene.add(tWall);
+  scene.add(rWall);
+  scene.add(bWall);
+  scene.add(lWall);
 }
 
 function addSphere(x,y,z) {
