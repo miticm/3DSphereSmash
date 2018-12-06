@@ -12,8 +12,13 @@ socket.on("connected", data => {
 
 socket.on("start", () => {
   var body = document.getElementById("three-output");
+  var pending = document.getElementById("pending");
   if (body.childNodes.length > 0) {
     body.removeChild(body.childNodes[0]);
+  }
+
+  if (pending.childNodes.length > 0) {
+    pending.innerHTML = '';
   }
 
   init();
@@ -34,7 +39,15 @@ socket.on("update",data => {
   spheres[p2Index].setLinearVelocity(data.opponent.speed)
   xspeed = data.me.speed.x;
   zspeed = data.me.speed.z;
-})
+});
+
+socket.on("pending", data => {
+  var body = document.getElementById("three-output");
+  if (body.childNodes.length > 0) {
+    body.removeChild(body.childNodes[0]);
+  }
+  document.getElementById("pending").innerHTML = `<h1>${data.message}</h1>`;
+});
 
 
 let scene, camera, renderer,stats;

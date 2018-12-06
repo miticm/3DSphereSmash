@@ -33,6 +33,11 @@ h3{
   margin-bottom: 1rem;
 }
 
+h1 {
+  color: white;
+  text-align: center;
+}
+
 .button {
   margin-top: 1rem;
   padding: 15px 25px;
