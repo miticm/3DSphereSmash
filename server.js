@@ -89,6 +89,10 @@ function connectPlayers(me, opponent) {
     me.pIndex = 1;
     me.p2Index = 0;
   }
+  else {
+    me.pIndex = 0;
+    me.p2Index = 1;
+  }
 
   me.socket.emit('connected',{
     index: me.pIndex
