@@ -75,9 +75,10 @@ function init() {
   renderer.shadowMap.enabled = true;
 
   addPlane();
+  addCage();
 
   // position and point the camera to the center of the scene
-  camera.position.set(0, 100, 70);
+  camera.position.set(0, 200, 200);
   camera.lookAt(scene.position);
 
   // add spotlight for the shadows
@@ -136,10 +137,38 @@ function addPlane() {
   return plane;
 }
 
+function addCage() {
+  let textureLoader = new THREE.TextureLoader();
+  let p1_material = Physijs.createMaterial(
+    new THREE.MeshPhongMaterial({
+      map: textureLoader.load("./assets/metal-floor.jpg")
+    }),
+    friction,
+    restitution
+  );
+  let plane = new Physijs.BoxMesh(
+    new THREE.BoxGeometry(100, 1, 100),
+    p1_material,
+    0
+  );
+
+  //plane.rotation.x = -0.5 * Math.PI;
+  plane.position.set(0, -20, 0);
+  plane.receiveShadow = true;
+  plane.castShadow = true;
+
+  // add the plane to the scene
+  scene.add(plane);
+  return plane;
+}
+
 function addSphere(x,y,z) {
   // create a sphere
+  let textureLoader = new THREE.TextureLoader();
   let material = Physijs.createMaterial(
-    new THREE.MeshStandardMaterial({ color: 0x830808}),
+    new THREE.MeshPhongMaterial({
+      map: textureLoader.load("./assets/tianchi.png")
+    }),
     friction,
     restitution
   );
