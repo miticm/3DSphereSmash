@@ -20,21 +20,74 @@ const io = socketio(server);
 
 io.on("connect", socket => {
   console.log(`Connected with ${socket.id}`);
-  let me = new player(socket.id, socket);
+  let me = new player(socket.id, socket, 0, 1);
   players.push(me);
   let opponent = {};
 
+  connectPlayers(me, opponent);
+
+  socket.on("disconnect", () => {
+    console.log(`Disconnected with ${socket.id}`);
+    
+    if (matches[opponent.id] && matches[me.id]) {
+      console.log(matches[opponent.id]);
+      console.log(matches[me.id]);
+      delete matches[opponent.id];
+      delete matches[me.id];
+
+      opponent.socket.emit("findNew");
+    }
+
+    players = _.without(players, me);
+  });
+
+  socket.on("findNew", () => {
+    opponent = {};
+    console.log("here");
+    connectPlayers(me, opponent);
+  });
+
+  socket.on('speed', data => {
+    if (!opponent || (Object.keys(opponent).length === 0 && opponent.constructor === Object)) {
+      opponent = playerById(matches[me.id]);
+    }
+
+    if (Object.keys(opponent).length !== 0) {
+      me.speed = data[me.pIndex];
+      opponent.speed = data[me.p2Index];
+      me.socket.emit("update", {
+        me: {speed: me.speed},
+        opponent: {speed: opponent.speed}
+      });
+      opponent.socket.emit("update", {
+        me: {speed: opponent.speed},
+        opponent: {speed: me.speed}
+      });
+    }
+  });
+
+});
+
+class player {
+  constructor(id, socket, pIndex, p2Index) {
+    this.speed = {x: 0, y:0, z:0};
+    this.id = id;
+    this.socket = socket;
+    this.pIndex = pIndex;
+    this.p2Index = p2Index;
+  }
+}
+
+function connectPlayers(me, opponent) {
   var id = _.sample(pendings);
-  let pIndex = 0;
-  let p2Index = 1;
 
   if (id) {
-    pIndex = 1;
-    p2Index = 0;
+    me.pIndex = 1;
+    me.p2Index = 0;
   }
 
-  socket.emit('connected',{
-    index: pIndex
+  me.socket.emit('connected',{
+    index: me.pIndex
   });
 
   if (!id) {
@@ -50,36 +103,6 @@ io.on("connect", socket => {
     opponent = playerById(id);
     me.socket.emit("start");
     opponent.socket.emit("start");
-  }
-
-  socket.on("disconnect", () => {
-    console.log(`Disconnected with ${socket.id}`);
-  });
-
-  socket.on('speed', data => {
-    if (!opponent || (Object.keys(opponent).length === 0 && opponent.constructor === Object)) {
-      opponent = playerById(matches[me.id]);
-    }
-
-    me.speed = data[pIndex];
-    opponent.speed = data[p2Index];
-    me.socket.emit("update", {
-      me: {speed: me.speed},
-      opponent: {speed: opponent.speed}
-    });
-    opponent.socket.emit("update", {
-      me: {speed: opponent.speed},
-      opponent: {speed: me.speed}
-    });
-  });
-
-});
-
-class player {
-  constructor(id, socket) {
-    this.speed = {x: 0, y:0, z:0};
-    this.id = id;
-    this.socket = socket;
   }
 }
 
