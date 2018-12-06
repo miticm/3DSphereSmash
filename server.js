@@ -1,6 +1,11 @@
 const express = require('express');
 const socketio = require("socket.io");
 const _ = require("underscore");
+const mongoose = require('mongoose');
+
+// DB credentials
+const mongoDB = 'mongodb://demoman:demoman234@ds044907.mlab.com:44907/3dspheresmash'
+
 let players = [];
 let pendings = [];
 let matches = {};
@@ -20,6 +25,18 @@ const server = app.listen(8888, () => {
   console.log("http://localhost:8888");
 });
 
+// configure mongoose
+mongoose.set('useCreateIndex', true);
+mongoose.connect(mongoDB, { useNewUrlParser: true })
+  .then(connection => {
+      console.log('Connected to MongoDB')
+  })
+  .catch(error => {
+    console.log(error.message)
+  });
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 const io = socketio(server);
 
 io.on("connect", socket => {
@@ -32,7 +49,7 @@ io.on("connect", socket => {
 
   socket.on("disconnect", () => {
     console.log(`Disconnected with ${socket.id}`);
-    
+
     if (matches[opponent.id] && matches[me.id]) {
       console.log(matches[opponent.id]);
       console.log(matches[me.id]);
@@ -122,6 +139,6 @@ function playerById(id) {
       if (players[i].id == id)
           return players[i];
   };
-  
+
   return {};
 }
