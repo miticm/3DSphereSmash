@@ -12,6 +12,10 @@ app.get('/',(req,res)=>{
   res.sendfile("./src/index.html");
 });
 
+app.get('/play', (req, res) => {
+  res.sendfile("./src/play.html");
+});
+
 const server = app.listen(8888, () => {
   console.log("http://localhost:8888");
 });
