@@ -11,6 +11,11 @@ socket.on("connected", data => {
 });
 
 socket.on("start", () => {
+  var body = document.getElementById("three-output");
+  if (body.childNodes.length > 0) {
+    body.removeChild(body.childNodes[0]);
+  }
+
   init();
   console.log("coming here");
   spheres = [
@@ -18,7 +23,7 @@ socket.on("start", () => {
     addSphere(9,4,9)
   ];
   renderScene();
-})
+});
 
 socket.on("findNew", () => {
   socket.emit("findNew");
