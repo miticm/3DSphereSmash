@@ -43,6 +43,8 @@ io.on("connect", socket => {
     }
 
     players = _.without(players, me);
+    pendings = _.without(pendings, me.id);
+    console.log(pendings);
   });
 
   socket.on("findNew", () => {
