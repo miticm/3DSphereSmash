@@ -37,15 +37,25 @@ mongoose.connect(mongoDB, { useNewUrlParser: true })
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+// get models & create
+require('./src/models/SiteAnalytics');
+const SiteAnalytics = mongoose.model('SiteAnalytics', SiteAnalytics);
+let currentAnalytics = new SiteAnalytics({ createdAt: Date.now() });
+currentAnalytics.save((err) => {
+  if(err) return handleError(err);
+})
+
 const io = socketio(server);
 
 io.on("connect", socket => {
-  console.log(`Connected with ${socket.id}`);
-  let me = new player(socket.id, socket, 0, 1);
-  players.push(me);
-  let opponent = {};
+  socket.on('new player', (username) => {
+    console.log(`Connected with ${socket.id}`);
+    let me = new player(socket.id, socket, 0, 1, username, Date.now());
+    players.push(me);
+    let opponent = {};
 
-  connectPlayers(me, opponent);
+    connectPlayers(me, opponent);
+  });
 
   socket.on("disconnect", () => {
     console.log(`Disconnected with ${socket.id}`);
@@ -92,12 +102,14 @@ io.on("connect", socket => {
 });
 
 class player {
-  constructor(id, socket, pIndex, p2Index) {
+  constructor(id, socket, pIndex, p2Index, username, startTime) {
     this.speed = {x: 0, y:0, z:0};
     this.id = id;
     this.socket = socket;
     this.pIndex = pIndex;
     this.p2Index = p2Index;
+    this.username = username;
+    this.startTime = startTime;
   }
 }
 
