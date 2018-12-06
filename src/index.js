@@ -8,16 +8,21 @@ socket.on("connected", data => {
     p2Index = 0;
   }
   console.log(index);
-})
+});
 
 socket.on("start", () => {
   init();
+  console.log("coming here");
   spheres = [
     addSphere(1,4,1),
     addSphere(9,4,9)
   ];
   renderScene();
 })
+
+socket.on("findNew", () => {
+  socket.emit("findNew");
+});
 
 socket.on("update",data => {
   spheres[index].setLinearVelocity(data.me.speed)
@@ -152,40 +157,40 @@ function addSphere(x,y,z) {
 
 
 
-  let zspeed = 0,xspeed = 0,acceleration = 1;
-  let keymap = {38:false,40:false,37:false,39:false,32:false};
-  document.addEventListener("keydown", onKeyDown);
-  document.addEventListener("keyup", onKeyUp);
-  function onKeyUp(event) {
-    if(event.which in keymap){
-      keymap[event.which] = false;
-    }
+let zspeed = 0,xspeed = 0,acceleration = 1;
+let keymap = {38:false,40:false,37:false,39:false,32:false};
+document.addEventListener("keydown", onKeyDown);
+document.addEventListener("keyup", onKeyUp);
+function onKeyUp(event) {
+  if(event.which in keymap){
+    keymap[event.which] = false;
   }
-  function onKeyDown(event) {
-    if(event.which in keymap){
-      keymap[event.which] = true;
-    }
+}
+function onKeyDown(event) {
+  if(event.which in keymap){
+    keymap[event.which] = true;
   }
+}
 
-  function updateSpeed() {
-    if(keymap[32]){
-      acceleration = 5;
-    }else{
-      acceleration = 1;
-    }
-    if (keymap[38]) {
-      zspeed -= acceleration;
-    } 
-    if (keymap[40]) {
-      zspeed += acceleration;
-    } 
-    if (keymap[37]) {
-      xspeed -= acceleration;
-    } 
-    if (keymap[39]) {
-      xspeed += acceleration;
-    }
-    playersData[index] = {z: zspeed, y: spheres[index].getLinearVelocity().y, x: xspeed}
-    playersData[p2Index] = spheres[p2Index].getLinearVelocity()
-    socket.emit("speed",playersData)
+function updateSpeed() {
+  if(keymap[32]){
+    acceleration = 5;
+  }else{
+    acceleration = 1;
   }
+  if (keymap[38]) {
+    zspeed -= acceleration;
+  } 
+  if (keymap[40]) {
+    zspeed += acceleration;
+  } 
+  if (keymap[37]) {
+    xspeed -= acceleration;
+  } 
+  if (keymap[39]) {
+    xspeed += acceleration;
+  }
+  playersData[index] = {z: zspeed, y: spheres[index].getLinearVelocity().y, x: xspeed}
+  playersData[p2Index] = spheres[p2Index].getLinearVelocity()
+  socket.emit("speed",playersData)
+}
