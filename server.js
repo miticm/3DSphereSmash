@@ -12,6 +12,10 @@ app.get('/',(req,res)=>{
   res.sendfile("./src/index.html");
 });
 
+app.get('/play', (req, res) => {
+  res.sendfile("./src/play.html");
+});
+
 const server = app.listen(8888, () => {
   console.log("http://localhost:8888");
 });
@@ -39,6 +43,8 @@ io.on("connect", socket => {
     }
 
     players = _.without(players, me);
+    pendings = _.without(pendings, me.id);
+    console.log(pendings);
   });
 
   socket.on("findNew", () => {
@@ -84,6 +90,10 @@ function connectPlayers(me, opponent) {
   if (id) {
     me.pIndex = 1;
     me.p2Index = 0;
+  }
+  else {
+    me.pIndex = 0;
+    me.p2Index = 1;
   }
 
   me.socket.emit('connected',{
