@@ -103,7 +103,7 @@ function connectPlayers(me, opponent) {
   if (!id) {
     console.log("added " + me.id + " to pending");
     pendings.push(me.id);
-    me.socket.emit("pending", {status: "pending", message: "waiting for a new player."});
+    me.socket.emit("pending", {status: "pending", message: "Waiting for a new player."});
   }
   else {
     pendings = _.without(pendings, id);
