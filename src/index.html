@@ -14,18 +14,10 @@
     <div class="container">
         <h3>3D sphere smashing</h3>
         <label>Username</label>
-        <input type="text" id="username">
-        <a href="/play">
-			<button class="button" id="submit-btn" onclick="buttonClicked()">Start</button>
-	        <script>
-	            function buttonClicked() {
-	                var elem = document.getElementById("username")
-	                console.log(elem.value);
-	                document.getElementById("sign-in").style.display = "none";
-	                socket.emit('new player', elem.value);
-	            }
-	        </script>
-        </a>
+        <form action="/play" method="get">
+            <input type="text" id="username" name="username">
+            <input type="submit" class="button" id="submit-btn" value="Start">
+        </form>
     </div>
 </body>
 </html>
