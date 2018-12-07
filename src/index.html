@@ -14,10 +14,10 @@
     <div class="container">
         <h3>3D sphere smashing</h3>
         <label>Username</label>
-        <input type="text">
-        <a href="/play">
-            <button class="button">Start</button>
-        </a>
+        <form action="/play" method="get">
+            <input type="text" id="username" name="username">
+            <input type="submit" class="button" id="submit-btn" value="Start">
+        </form>
     </div>
 </body>
 </html>

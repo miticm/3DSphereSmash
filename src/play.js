@@ -60,7 +60,7 @@ function init() {
   // Add phys environment
   Physijs.scripts.worker = "../libs/physijs/physijs_worker.js";
   Physijs.scripts.ammo = "./ammo.js";
-  
+
   stats = initStats();
 
   // listen to the resize events
@@ -294,13 +294,13 @@ function updateSpeed() {
   }
   if (keymap[38]) {
     zspeed -= acceleration;
-  } 
+  }
   if (keymap[40]) {
     zspeed += acceleration;
-  } 
+  }
   if (keymap[37]) {
     xspeed -= acceleration;
-  } 
+  }
   if (keymap[39]) {
     xspeed += acceleration;
   }
