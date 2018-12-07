@@ -11,12 +11,8 @@ const AnalyticSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
-    totalTime: {
-        type: Number,
-        default: 0,
-    },
     usernames: {
-        type: String,
+        type: [ String ],
     },
     createdAt: {
         type: Date,
